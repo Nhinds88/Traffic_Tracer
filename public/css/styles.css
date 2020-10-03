@@ -1,0 +1,233 @@
+html {
+    background-color: #2A3132;
+}
+
+body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    text-align: center;
+    font-size: 2.5em;
+}
+
+main {
+    width: 50%;
+    margin: 0 auto;
+    /*centers the content*/
+}
+
+.pageTitle {
+    color: #90AFC5;
+    font-size: 1.2em;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.mainTextA {
+    color: #90AFC5;
+    font-size: 0.8em;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.mainTextB {
+    color: #336B87;
+    font-size: 0.8em;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.footLink {
+    text-decoration: solid;
+}
+
+.footA a {
+    color: #336B87;
+    font-size: 0.4em;
+    font-family: 'Press Start 2P', cursive;
+    text-decoration: none;
+}
+
+.footB a {
+    color: #90AFC5;
+    font-size: 0.4em;
+    font-family: 'Press Start 2P', cursive;
+    text-decoration: none;
+}
+
+footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    text-align: center;
+}
+
+nav[role="select"] {
+    width: 100%;
+    position: relative;
+    color: #000;
+    top: 10%;
+    left: 10%;
+    font-family: 'Press Start 2P', cursive;
+}
+
+nav[role="select"]>select {
+    display: none;
+}
+
+nav[role="select"] ul {
+    width: 100%;
+    list-style: none;
+}
+
+nav[role="select"] ul>li {
+    float: left;
+    padding: 0.55em 0.45em;
+    width: 19%;
+    font-size: 0.4em;
+    background-color: #763626;
+    color: #2A3132;
+    text-align: center;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-in-out;
+    transition-property: box-shadow, background, color, text-align, padding;
+    cursor: pointer;
+}
+
+nav[role="select"] ul>li:hover {
+    background-color: #602c1f;
+    color: #fff;
+    text-align: left;
+    padding-left: 0.75em;
+    box-shadow: 0 0 0 0.25em rgba(0, 0, 0, .3), 0 0 0 0.5em rgba(0, 0, 0, .3), 0 0 0 0.75em rgba(0, 0, 0, .3), inset 0 0 0 0.25em rgba(0, 0, 0, .3);
+}
+
+nav[role="select"] ul>li>a {
+    color: inherit;
+    text-decoration: none;
+    transition: inherit;
+}
+
+
+/* small screens */
+
+@media screen and (max-width: 44em) {
+    body {
+        margin: 1em 0;
+    }
+    nav[role="select"] ul {
+        display: none;
+    }
+    nav[role="select"]:after {
+        position: absolute;
+        z-index: -1;
+        content: "Menu";
+        right: 0;
+        bottom: -1.75em;
+        background: #763626;
+        color: #2A3132;
+        padding: 0.15em 0.55em;
+    }
+    nav[role="select"] select {
+        display: block;
+        user-select: none;
+        cursor: pointer;
+        width: 100%;
+        padding: 0.55em 0.45em;
+        border: none;
+        background-color: #602c1f;
+        font: 1.2em 'Exo', sans-serif;
+    }
+}
+
+.container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.container:hover .top:before,
+.container:active .top:before,
+.container:hover .bottom:before,
+.container:active .bottom:before,
+.container:hover .top:after,
+.container:active .top:after,
+.container:hover .bottom:after,
+.container:active .bottom:after {
+    margin-left: 200px;
+    transform-origin: -200px 50%;
+    transition-delay: 0s;
+}
+
+.container:hover .center,
+.container:active .center {
+    opacity: 1;
+    transition-delay: 0.2s;
+}
+
+.top:before,
+.bottom:before,
+.top:after,
+.bottom:after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 200vmax;
+    height: 200vmax;
+    top: 50%;
+    left: 50%;
+    margin-top: -100vmax;
+    transform-origin: 0 50%;
+    transition: all 0.5s cubic-bezier(0.445, 0.05, 0, 1);
+    z-index: 10;
+    opacity: 0.65;
+    transition-delay: 0.2s;
+}
+
+.top:before {
+    transform: rotate(45deg);
+    background: #763626;
+}
+
+.top:after {
+    transform: rotate(135deg);
+    background: #2A3132;
+}
+
+.bottom:before {
+    transform: rotate(-45deg);
+    background: #90AFC5;
+}
+
+.bottom:after {
+    transform: rotate(-135deg);
+    background: #336B87;
+}
+
+.center {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    top: 50%;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: -200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.445, 0.05, 0, 1);
+    transition-delay: 0s;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.center input {
+    width: 100%;
+    padding: 15px;
+    margin: 5px;
+    border-radius: 1px;
+    border: 1px solid #ccc;
+    font-family: 'Press Start 2P', cursive;
+}
