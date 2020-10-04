@@ -210,6 +210,16 @@ $(document).ready(function(){
                     exitdatesandtimes.push(json);
                 }
 
+                // for (i = 0; i < exitdatesandtimes.length; i++) {
+                //     if (typeof exitdatesandtimes[i].x == undefined) {
+                //         exitdatesandtimes.splice(i, 1);
+                //     }
+                // }
+                
+                for (i = 0; i < exitdatesandtimes.length; i++) {
+                    console.log(exitdateArray[i]);
+                }
+
                 timeChart(enterdatesandtimes, exitdatesandtimes, dates);
             }
         })
