@@ -1,5 +1,6 @@
 html {
     background-color: #2A3132;
+    overflow-x: hidden;
 }
 
 body {
@@ -106,7 +107,6 @@ nav[role="select"] ul>li>a {
     transition: inherit;
 }
 
-
 /* small screens */
 
 @media screen and (max-width: 44em) {
@@ -136,6 +136,29 @@ nav[role="select"] ul>li>a {
         background-color: #602c1f;
         font: 1.2em 'Exo', sans-serif;
     }
+}
+
+#reporttitle {
+    color: #336B87;
+    font-size: 0.4em;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#reportsubtitle {
+    color: #336B87;
+    font-size: 0.3em;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.selections {
+    color: #336B87;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.containerChart {
+    position: relative;
+    left: 35%;
+    width: 40%;
 }
 
 .container {

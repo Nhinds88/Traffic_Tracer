@@ -58,11 +58,46 @@ $(document).ready(function(){
         });
     }
 
-    // need to look up alternate charts for this
     function timeChart(data1, data2, labels) {
-        var ctx = document.getElementById("myChartTime").getContext('2d');
+        var canvas = document.getElementById("myChartTime");
+        var graphParams = {
+            type:"scatter",
+            data:{
+                labels: labels,
+                datasets: [{
+                    label:"Enter",
+                    data:data1,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                },
+                {
+                    label:"Exit",
+                    data:data2,
+                    borderColor: 'rgba(118, 54, 38 , 1)',
+                    backgroundColor: 'rgba(118, 54, 38 , 0.2)',
+                }],
+            },
+            options:{
+                scales:{
+                    xAxes:[{
+                        type:"time",
+                            time: {
+                                displayFormats: {
+                                    day: 'MMM D'
+                                }
+                            },
+                        distribution: "series",
+                    }],
+                }
+            }
+        }
+        ctx = new Chart(canvas, graphParams);
+    }
+
+    function hourlyChart(data1, data2, labels) {
+        var ctx = document.getElementById("myChartHourly").getContext('2d');
         var myChart = new Chart(ctx, {
-            type: 'scatter',
+            type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
@@ -90,6 +125,44 @@ $(document).ready(function(){
                 }
             }
         });
+    }
+
+    function timeHourlyChart(data1, data2) {
+        var canvas = document.getElementById("myChartIndividualHourly");
+        var graphParams = {
+            type:"scatter",
+            data:{
+                datasets: [{
+                    label:"Enter",
+                    data:data1,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                },
+                {
+                    label:"Exit",
+                    data:data2,
+                    borderColor: 'rgba(118, 54, 38 , 1)',
+                    backgroundColor: 'rgba(118, 54, 38 , 0.2)',
+                }],
+            },
+            options:{
+                scales:{
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }
+                    ],
+                    xAxes:[{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        distribution: "series",
+                    }],
+                }
+            }
+        }
+        ctx = new Chart(canvas, graphParams);
     }
 
     function getCounts(arr, val) {
@@ -147,9 +220,9 @@ $(document).ready(function(){
 
     $("#getTimeData").on('click', function() {
 
-        date1Temp = new Date($("#time1").val().toString());
+        date1Temp = new Date($("#d1").val().toString());
         date1 = new Date(date1Temp.getFullYear(), date1Temp.getMonth(), date1Temp.getDate() + 1);
-        date2Temp = new Date($("#time2").val().toString());
+        date2Temp = new Date($("#d2").val().toString());
         date2 = new Date(date2Temp.getFullYear(), date2Temp.getMonth(), date2Temp.getDate() + 1);
 
         const dates = getDatesBetween(date1, date2); 
@@ -169,25 +242,33 @@ $(document).ready(function(){
 
                 rows.forEach(function(row, index) {
                     if (row.enterorexit == "enter") {
-                        enterdateArray[index] = row.date.substring(0, row.date.length - 14);
+                        enterdateArray[index] = row.date;
                     }
                 });
 
                 rows.forEach(function(row, index) {
                     if (row.enterorexit == "exit") {
-                        exitdateArray[index] = row.date.substring(0, row.date.length - 14);
+                        exitdateArray[index] = row.date;
                     }
                 });
 
                 rows.forEach(function(row, index) {
                     if (row.enterorexit == "enter") {
-                        entertimeArray[index] = row.time;
+                        temp = row.time;
+                        timeSplit = temp.split(":");
+                        timeString = timeSplit[0] + "." + timeSplit[1] + timeSplit[2];
+                        timeEntry = parseFloat(timeString);
+                        entertimeArray[index] = timeEntry;
                     }
                 });
 
                 rows.forEach(function(row, index) {
                     if (row.enterorexit == "exit") {
-                        exittimeArray[index] = row.time;
+                        temp = row.time;
+                        timeSplit = temp.split(":");
+                        timeString = timeSplit[0] + "." + timeSplit[1] + timeSplit[2];
+                        timeEntry = parseFloat(timeString);
+                        exittimeArray[index] = timeEntry;
                     }
                 });
 
@@ -210,17 +291,140 @@ $(document).ready(function(){
                     exitdatesandtimes.push(json);
                 }
 
-                // for (i = 0; i < exitdatesandtimes.length; i++) {
-                //     if (typeof exitdatesandtimes[i].x == undefined) {
-                //         exitdatesandtimes.splice(i, 1);
-                //     }
-                // }
+                timeChart(enterdatesandtimes, exitdatesandtimes, dates);
+            }
+        })
+    })
+
+    $("#getHourlyData").on('click', function() {
+        
+        const hours = ["12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"];
+
+        $.ajax({
+            method: "get", 
+            url: "/api/countsHourly", 
+            data: { "date" : $("#day").val()}, 
+            success: function(rows, status) {
+
+                var exitCount = [];
+                var enterCount = [];
+                var exitTimes = [];
+                var enterTimes = [];
                 
-                for (i = 0; i < exitdatesandtimes.length; i++) {
-                    console.log(exitdateArray[i]);
+                rows.forEach(function(row, index) {
+                    if (row.enterorexit == "enter") {
+                        temp = row.time;
+                        timeSplit = temp.split(":");
+                        timeString = timeSplit[0];
+                        hourEnter = parseInt(timeString);
+                        enterTimes[index] = hourEnter;
+                    }
+                });
+
+                rows.forEach(function(row, index) {
+                    if (row.enterorexit == "exit") {
+                        temp = row.time;
+                        timeSplit = temp.split(":");
+                        timeString = timeSplit[0];
+                        hourExit = parseInt(timeString);
+                        exitTimes[index] = hourExit;
+                    }
+                });
+
+                for (i = 0; i < hours.length; i++) {
+                    hourCount = getCounts(enterTimes, i);
+                    enterCount[i] = hourCount;
                 }
 
-                timeChart(enterdatesandtimes, exitdatesandtimes, dates);
+                for (i = 0; i < hours.length; i++) {
+                    hourCount = getCounts(exitTimes, i);
+                    exitCount[i] = hourCount;
+                }
+
+                hourlyChart(enterCount, exitCount, hours);
+            }
+        })
+    })
+
+    $("#getIndividualHourlyData").on('click', function() {
+        
+        const hours = ["12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"];
+
+        $.ajax({
+            method: "get", 
+            url: "/api/individualHourly", 
+            data: { "date" : $("#scatterDay").val()}, 
+            success: function(rows, status) {
+
+                var entertimeArray = [];
+                var enterhourArray = [];
+                var exittimeArray = [];
+                var exithourArray = [];
+
+                rows.forEach(function(row, index) {
+                    if (row.enterorexit == "enter") {
+                        enterhourArray[index] = 0;
+                    }
+                });
+
+                rows.forEach(function(row, index) {
+                    if (row.enterorexit == "exit") {
+                        exithourArray[index] = 0;
+                    }
+                });
+
+                rows.forEach(function(row, index) {
+                    if (row.enterorexit == "enter") {
+                        temp = row.time;
+                        timeSplit = temp.split(":");
+                        timeString = timeSplit[0] + "." + timeSplit[1] + timeSplit[2];
+                        timeEntry = parseFloat(timeString);
+                        entertimeArray[index] = timeEntry;
+
+                        for (i = 0; i < hours.length; i++) {
+                            if (timeEntry >= i && i+1 < timeEntry) {
+                                enterhourArray[index] = i; 
+                            }
+                        }
+                    }
+                });
+
+                rows.forEach(function(row, index) {
+                    if (row.enterorexit == "exit") {
+                        temp = row.time;
+                        timeSplit = temp.split(":");
+                        timeString = timeSplit[0] + "." + timeSplit[1] + timeSplit[2];
+                        timeEntry = parseFloat(timeString);
+                        exittimeArray[index] = timeEntry;
+
+                        for (i = 0; i < hours.length; i++) {
+                            if (timeEntry >= i && i+1 < timeEntry) {
+                                exithourArray[index] = i;
+                            }
+                        }
+                    }
+                });
+
+                var enterhoursandtimes = [];
+                var exithoursandtimes = [];
+
+                for (i = 0; i < enterhourArray.length; i++) {
+                    x = enterhourArray[i];
+                    y = entertimeArray[i];
+
+                    var json = {x: x, y: y};
+                    enterhoursandtimes.push(json);
+                }
+
+                for (i = 0; i < exithourArray.length; i++) {
+                    x = exithourArray[i];
+                    y = exittimeArray[i];
+
+                    var json = {x: x, y: y};
+                    exithoursandtimes.push(json);
+                }
+
+                timeHourlyChart(enterhoursandtimes, exithoursandtimes);
             }
         })
     })

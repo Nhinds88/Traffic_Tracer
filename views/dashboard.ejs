@@ -5,32 +5,56 @@
 
     <h1 class="pageTitle">Dashboard</h1>
 
-    <!-- <div id="countsReport">
-        <input type="date" id="d1" name="date1" placeholder="Starting Date" required>
-        <input type="date" id="d2" name="date2" placeholder="Ending Date" required>
-        <button id='getData'>
-            Get Data
-        </button>
-        <div class="container">
-            <canvas id="myChartEOE"></canvas>
-        </div>
-    </div> -->
-    
     <br>
     <br>
 
-    <div id="timesanddatesReport">
-        <input type="date" id="time1" name="datefortime1" required>
-        <input type="date" id="time2" name="datefortime2" required>
-        <button id='getTimeData'>
-            Get Data
-        </button>
-        <div class="containerChart">
-            <canvas id="myChartTime"></canvas>
+    <div id="reports">
+        <div id="countsReport" >
+            <p id="reporttitle">Daily Entry and Exit Totals</p>
+            <p id="reportsubtitle">Select your date range</p>
+            <input type="date" class="selections" id="d1" name="date1" placeholder="Starting Date" required>
+            <input type="date" class="selections" id="d2" name="date2" placeholder="Ending Date" required>
+            <button class="selections" id='getData'>
+                Get Data
+            </button>
+            <div class="containerChart">
+                <canvas id="myChartEOE"></canvas>
+            </div>
+        </div>
+        <div id="timesanddatesReport" >
+            <p id="reporttitle">Daily Individual Entries and Exits</p>
+            <p id="reportsubtitle">Select your date range</p>
+            <input type="date" class="selections" id="time1" name="datefortime1" required>
+            <input type="date" class="selections" id="time2" name="datefortime2" required>
+            <button class="selections" id='getTimeData'>
+                Get Data
+            </button>
+            <div class="containerChart">
+                <canvas id="myChartTime"></canvas>
+            </div>
+        </div>
+        <div id="hourlyReport" >
+            <p id="reporttitle">Hourly Entry and Exit Totals</p>
+            <p id="reportsubtitle">Select your date</p>
+            <input type="date" class="selections" id="day" name="date" required>
+            <button class="selections" id='getHourlyData'>
+                Get Data
+            </button>
+            <div class="containerChart">
+                <canvas id="myChartHourly"></canvas>
+            </div>
+        </div>
+        <div id="hourlyIndividualReport" >
+            <p id="reporttitle">Individual Hourly Entry and Exit</p>
+            <p id="reportsubtitle">Select your date</p>
+            <input type="date" class="selections" id="scatterDay" name="date" required>
+            <button class="selections" id='getIndividualHourlyData'>
+                Get Data
+            </button>
+            <div class="containerChart">
+                <canvas id="myChartIndividualHourly"></canvas>
+            </div>
         </div>
     </div>
-
-    <br>
-    <br>
 
     <%- include('partials/footer_NoLink.ejs') %>
