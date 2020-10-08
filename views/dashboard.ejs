@@ -20,6 +20,18 @@
             <div class="containerChart">
                 <canvas id="myChartEOE"></canvas>
             </div>
+            <p id="reportsubtitle">Entry PDF</p>
+            <input type="date" class="selections" id="enterpdf1" name="date1" placeholder="Starting Date" required>
+            <input type="date" class="selections" id="enterpdf2" name="date2" placeholder="Ending Date" required>
+            <button class="selections" id='getEntryPDF'>
+                Get PDF
+            </button>
+            <p id="reportsubtitle">Exit PDF</p>
+            <input type="date" class="selections" id="exitpdf1" name="date1" placeholder="Starting Date" required>
+            <input type="date" class="selections" id="exitpdf2" name="date2" placeholder="Ending Date" required>
+            <button class="selections" id='getExitPDF'>
+                Get PDF
+            </button>
         </div>
         <div id="timesanddatesReport" >
             <p id="reporttitle">Daily Individual Entries and Exits</p>
@@ -32,6 +44,9 @@
             <div class="containerChart">
                 <canvas id="myChartTime"></canvas>
             </div>
+            <button class="selections" id='getTimeData'>
+                Get PDF
+            </button>
         </div>
         <div id="hourlyReport" >
             <p id="reporttitle">Hourly Entry and Exit Totals</p>
@@ -43,6 +58,9 @@
             <div class="containerChart">
                 <canvas id="myChartHourly"></canvas>
             </div>
+            <button class="selections" id='getTimeData'>
+                Get PDF
+            </button>
         </div>
         <div id="hourlyIndividualReport" >
             <p id="reporttitle">Individual Hourly Entry and Exit</p>
@@ -54,6 +72,9 @@
             <div class="containerChart">
                 <canvas id="myChartIndividualHourly"></canvas>
             </div>
+            <button class="selections" id='getTimeData'>
+                Get PDF
+            </button>
         </div>
     </div>
 

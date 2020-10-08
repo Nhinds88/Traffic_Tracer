@@ -218,6 +218,22 @@ $(document).ready(function(){
         })
     })
 
+    $("#getEntryPDF").on('click', function() {
+        $.ajax({
+            method: "post", 
+            url: "/api/entrypdf", 
+            data: { "date1" : $("#enterpdf1").val(),"date2" : $("#enterpdf2").val()}
+        })
+    })
+
+    $("#getExitPDF").on('click', function() {
+        $.ajax({
+            method: "post", 
+            url: "/api/exitpdf", 
+            data: { "date1" : $("#exitpdf1").val(),"date2" : $("#exitpdf2").val()}
+        })
+    })
+
     $("#getTimeData").on('click', function() {
 
         date1Temp = new Date($("#d1").val().toString());
