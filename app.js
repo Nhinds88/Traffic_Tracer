@@ -15,24 +15,24 @@ app.use(express.json({ limit: '1mb' }));
 var connection = tools.createConnection();
 
 app.use(session({
-	secret: 'secret',
-	resave: true,
+    secret: 'secret',
+    resave: true,
     saveUninitialized: true
 }));
-app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var ssn;
 
 var fonts = {
     Roboto: {
-      normal: "fonts/Roboto-Regular.ttf",
-      bold: "fonts/Roboto-Medium.ttf",
-      italics: "fonts/Roboto-Italic.ttf",
-      bolditalics: "fonts/Roboto-MediumItalic.ttf"
+        normal: "fonts/Roboto-Regular.ttf",
+        bold: "fonts/Roboto-Medium.ttf",
+        italics: "fonts/Roboto-Italic.ttf",
+        bolditalics: "fonts/Roboto-MediumItalic.ttf"
     }
 };
-  
+
 // const pdfMake = require('../pdfmake/pdfmake');
 // const vfsFonts = require('../pdfmake/vfs_fonts');
 
@@ -85,7 +85,7 @@ app.post("/auth", async function(req, res) {
     ssn = req.session;
 
     if (username && password) {
-        
+
         connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
 
             console.log("Query result: ", results);
@@ -105,7 +105,7 @@ app.post("/auth", async function(req, res) {
         res.send('Please enter Username and Password!');
         res.end();
     }
-});//Login Auth
+}); //Login Auth
 
 app.get('/api/countsEnterAndExit', async function(req, res) {
 
@@ -120,7 +120,7 @@ app.get('/api/countsEnterAndExit', async function(req, res) {
     connection.query(sql, function(error, mid, fields) {
         console.log(mid);
         if (!error) {
-            connection.query('SELECT trafficid, enterorexit, date, time FROM foottraffic WHERE merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [ req.query.date1, req.query.date2], function(error, results, fields) {
+            connection.query('SELECT trafficid, enterorexit, date, time FROM foottraffic WHERE merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [req.query.date1, req.query.date2], function(error, results, fields) {
                 if (!error) {
                     res.send(results);
                 } else {
@@ -146,7 +146,7 @@ app.get('/api/countsTime', async function(req, res) {
     connection.query(sql, function(error, mid, fields) {
         console.log(mid);
         if (!error) {
-            connection.query('SELECT trafficid, enterorexit, date, time FROM foottraffic WHERE merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [ req.query.date1, req.query.date2], function(error, results, fields) {
+            connection.query('SELECT trafficid, enterorexit, date, time FROM foottraffic WHERE merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [req.query.date1, req.query.date2], function(error, results, fields) {
                 if (!error) {
                     res.send(results);
                 } else {
@@ -172,7 +172,7 @@ app.get('/api/countsHourly', async function(req, res) {
     connection.query(sql, function(error, mid, fields) {
         console.log(mid);
         if (!error) {
-            connection.query('SELECT trafficid, enterorexit, time FROM foottraffic WHERE merchantid = ' + mid[0].merchantid + ' AND date = ?', [ req.query.date], function(error, results, fields) {
+            connection.query('SELECT trafficid, enterorexit, time FROM foottraffic WHERE merchantid = ' + mid[0].merchantid + ' AND date = ?', [req.query.date], function(error, results, fields) {
                 if (!error) {
                     res.send(results);
                 } else {
@@ -198,7 +198,7 @@ app.get('/api/individualHourly', async function(req, res) {
     connection.query(sql, function(error, mid, fields) {
         console.log(mid);
         if (!error) {
-            connection.query('SELECT trafficid, enterorexit, time FROM foottraffic WHERE merchantid = ' + mid[0].merchantid + ' AND date = ?', [ req.query.date], function(error, results, fields) {
+            connection.query('SELECT trafficid, enterorexit, time FROM foottraffic WHERE merchantid = ' + mid[0].merchantid + ' AND date = ?', [req.query.date], function(error, results, fields) {
                 if (!error) {
                     res.send(results);
                 } else {
@@ -217,7 +217,7 @@ app.get('/api/individualHourly', async function(req, res) {
 
 Object.byString = function(o, s) {
     s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-    s = s.replace(/^\./, '');           // strip a leading dot
+    s = s.replace(/^\./, ''); // strip a leading dot
     var a = s.split('.');
     for (var i = 0, n = a.length; i < n; ++i) {
         var k = a[i];
@@ -234,21 +234,21 @@ Object.byString = function(o, s) {
 function buildTableBody(data, columns, showHeaders, headers) {
     var body = [];
     // Inserting headers
-    if(showHeaders) {
-    body.push(headers);
+    if (showHeaders) {
+        body.push(headers);
     }
-    
+
     // Inserting items from external data array
     data.forEach(function(row) {
         var dataRow = [];
         var i = 0;
 
         columns.forEach(function(column) {
-            dataRow.push({text: Object.byString(row, column), alignment: headers[i].alignmentChild });
+            dataRow.push({ text: Object.byString(row, column), alignment: headers[i].alignmentChild });
             i++;
         })
         body.push(dataRow);
-       
+
     });
 
     return body;
@@ -266,6 +266,10 @@ function table(data, columns, witdhsDef, showHeaders, headers, layoutDef) {
 }
 
 app.post("/api/entrypdf", (req, res) => {
+    console.log('req.body');
+    console.log(req.body);
+    console.log(req.body.entry1);
+    console.log(req.body.entry2);
 
     ssn = req.session;
 
@@ -278,7 +282,7 @@ app.post("/api/entrypdf", (req, res) => {
     connection.query(sql, function(error, mid, fields) {
         console.log(mid);
         if (!error) {
-            connection.query('SELECT trafficid, date, time FROM foottraffic WHERE enterorexit = "enter" AND merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [ req.query.date1, req.query.date2], function(error, results, fields) {
+            connection.query('SELECT trafficid, date, time FROM foottraffic WHERE enterorexit = "enter" AND merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [req.body.entry1, req.body.entry2], function(error, results, fields) {
                 if (!error) {
                     console.log(results[0]);
 
@@ -286,53 +290,39 @@ app.post("/api/entrypdf", (req, res) => {
 
                     results.forEach(function(row, index) {
                         dataSQL.push({
-                            'trafficid': row.trafficid.toString(), 
-                            'date': row.date.toString().substr(0, 15), 
+                            'trafficid': row.trafficid.toString(),
+                            'date': row.date.toString().substr(0, 15),
                             'time': row.time.toString()
                         })
                     })
 
                     var dd = {
-                        background: function () {
+                        background: function() {
                             return {
-                                canvas: [
-                                    {
-                                        type: 'rect',
-                                        x: 0, y: 0, w: 595.28, h: 841.89,
-                                        color: '#ededed'
-                                    }
-                                ]
+                                canvas: [{
+                                    type: 'rect',
+                                    x: 0,
+                                    y: 0,
+                                    w: 595.28,
+                                    h: 841.89,
+                                    color: '#ededed'
+                                }]
                             };
                         },
                         content: [
-                            {image: './logo/trafficTracerSmall.png'},
-                            {text: ssn.merchant, color: '#336B87'},
-                            { text: 'Entry Data', color: '#336B87', fontSize: 18, bold:true, margin: [0, 0 ,0, 10]},
-                            table(dataSQL, ['trafficid', 'date', 'time'], ['*', '*', '*'], true, [{text: 'ID', color: '#336B87', bold: true}, {text: 'Date', color: '#336B87', bold: true}, {text: 'Time', color: '#336B87', bold: true}], '')
+                            { image: './logo/trafficTracerSmall.png' },
+                            { text: ssn.merchant, color: '#336B87' },
+                            { text: 'Entry Data', color: '#336B87', fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+                            table(dataSQL, ['trafficid', 'date', 'time'], ['*', '*', '*'], true, [{ text: 'ID', color: '#336B87', bold: true }, { text: 'Date', color: '#336B87', bold: true }, { text: 'Time', color: '#336B87', bold: true }], '')
                         ]
                     }
-                    
+
                     var now = new Date();
                     var pdfDoc = printer.createPdfKitDocument(dd);
-                    pdfDoc.pipe(fs.createWriteStream('document.pdf'));
+                    pdfDoc.pipe(fs.createWriteStream('pdfs/document.pdf'));
                     pdfDoc.end();
                     console.log(new Date() - now);
-                    // const pdfDoc = pdfMake.createPdf(dd);
-                    // pdfDoc.getBase64((data) => {
-                    //     res.writeHead(200, 
-                    //     {
-                    //         'Content-Type': 'application/pdf',
-                    //         'Content-Disposition': 'attachment;filename="filename.pdf"'
-                    //     });
-
-                    //     const download = Buffer.from(data.String('utf-8'), 'base64');
-                    //     res.end(download);
-                    // });
-                    // res.set("content-type", "application/pdf");
-                    // var pdfDoc = printer.createPdfKitDocument(dd);
-                    // pdfDoc.pipe(res);
-                    // pdfDoc.end();
-                    // res.send(pdfDoc);
+                    res.redirect('/dashboard')
                 } else {
                     console.log(error)
                 }
@@ -341,6 +331,10 @@ app.post("/api/entrypdf", (req, res) => {
             console.log(error)
         }
     });
+});
+
+app.get("/api/showenterpdf", (req, res) => {
+    res.send(window.open('/pdfs/document.pdf', '_blank'));
 });
 
 app.post("/api/exitpdf", (req, res) => {
@@ -359,7 +353,7 @@ app.post("/api/exitpdf", (req, res) => {
     connection.query(sql, function(error, mid, fields) {
         console.log(mid);
         if (!error) {
-            connection.query('SELECT trafficid, date, time FROM foottraffic WHERE enterorexit = "exit" AND merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [ req.query.date1, req.query.date2], function(error, results, fields) {
+            connection.query('SELECT trafficid, date, time FROM foottraffic WHERE enterorexit = "exit" AND merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [req.query.date1, req.query.date2], function(error, results, fields) {
                 if (!error) {
                     console.log(results[0]);
 
@@ -367,33 +361,34 @@ app.post("/api/exitpdf", (req, res) => {
 
                     results.forEach(function(row, index) {
                         data.push({
-                            'trafficid': row.trafficid.toString(), 
-                            'date': row.date.toString().substr(0, 15), 
+                            'trafficid': row.trafficid.toString(),
+                            'date': row.date.toString().substr(0, 15),
                             'time': row.time.toString()
                         })
                     })
 
                     var dd = {
-                        background: function () {
+                        background: function() {
                             return {
-                                canvas: [
-                                    {
-                                        type: 'rect',
-                                        x: 0, y: 0, w: 595.28, h: 841.89,
-                                        color: '#ededed'
-                                    }
-                                ]
+                                canvas: [{
+                                    type: 'rect',
+                                    x: 0,
+                                    y: 0,
+                                    w: 595.28,
+                                    h: 841.89,
+                                    color: '#ededed'
+                                }]
                             };
                         },
                         content: [
-                            {image: 'logo/trafficTracerSmall.png'},
-                            {text: ssn.merchant, color: '#336B87'},
-                            { text: 'Exit Data', color: '#336B87', fontSize: 18, bold:true, margin: [0, 0 ,0, 10]},
-                            table(data, ['trafficid', 'date', 'time'], ['*', '*', '*'], true, [{text: 'ID', color: '#336B87', bold: true}, {text: 'Date', color: '#336B87', bold: true}, {text: 'Time', color: '#336B87', bold: true}], '')
+                            { image: 'logo/trafficTracerSmall.png' },
+                            { text: ssn.merchant, color: '#336B87' },
+                            { text: 'Exit Data', color: '#336B87', fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+                            table(data, ['trafficid', 'date', 'time'], ['*', '*', '*'], true, [{ text: 'ID', color: '#336B87', bold: true }, { text: 'Date', color: '#336B87', bold: true }, { text: 'Time', color: '#336B87', bold: true }], '')
                         ]
-                        
+
                     }
-                    
+
                     res.set("content-type", "application/pdf");
                     var pdfDoc = printer.createPdfKitDocument(dd);
                     pdfDoc.pipe(res);

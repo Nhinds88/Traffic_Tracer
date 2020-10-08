@@ -9,7 +9,7 @@
     <br>
 
     <div id="reports">
-        <div id="countsReport" >
+        <div id="countsReport">
             <p id="reporttitle">Daily Entry and Exit Totals</p>
             <p id="reportsubtitle">Select your date range</p>
             <input type="date" class="selections" id="d1" name="date1" placeholder="Starting Date" required>
@@ -21,19 +21,25 @@
                 <canvas id="myChartEOE"></canvas>
             </div>
             <p id="reportsubtitle">Entry PDF</p>
-            <input type="date" class="selections" id="enterpdf1" name="date1" placeholder="Starting Date" required>
-            <input type="date" class="selections" id="enterpdf2" name="date2" placeholder="Ending Date" required>
+            <!-- <input type="date" class="selections" id="enterpdf1" name="entry1" placeholder="Starting Date" required>
+            <input type="date" class="selections" id="enterpdf2" name="entry2" placeholder="Ending Date" required>
             <button class="selections" id='getEntryPDF'>
                 Get PDF
-            </button>
+            </button> -->
+            <form action="/api/entrypdf" method="post">
+                <label for="team_name">Enter dates </label>
+                <input id="entry1" type="date" name="entry1" required>
+                <input id="entry2" type="date" name="entry2" required>
+                <input id="getEntryPDF" type="submit" value="Get PDF">
+            </form>
             <p id="reportsubtitle">Exit PDF</p>
-            <input type="date" class="selections" id="exitpdf1" name="date1" placeholder="Starting Date" required>
-            <input type="date" class="selections" id="exitpdf2" name="date2" placeholder="Ending Date" required>
+            <input type="date" class="selections" id="exitpdf1" name="exit1" placeholder="Starting Date" required>
+            <input type="date" class="selections" id="exitpdf2" name="exit2" placeholder="Ending Date" required>
             <button class="selections" id='getExitPDF'>
                 Get PDF
             </button>
         </div>
-        <div id="timesanddatesReport" >
+        <div id="timesanddatesReport">
             <p id="reporttitle">Daily Individual Entries and Exits</p>
             <p id="reportsubtitle">Select your date range</p>
             <input type="date" class="selections" id="time1" name="datefortime1" required>
@@ -48,7 +54,7 @@
                 Get PDF
             </button>
         </div>
-        <div id="hourlyReport" >
+        <div id="hourlyReport">
             <p id="reporttitle">Hourly Entry and Exit Totals</p>
             <p id="reportsubtitle">Select your date</p>
             <input type="date" class="selections" id="day" name="date" required>
@@ -62,7 +68,7 @@
                 Get PDF
             </button>
         </div>
-        <div id="hourlyIndividualReport" >
+        <div id="hourlyIndividualReport">
             <p id="reporttitle">Individual Hourly Entry and Exit</p>
             <p id="reportsubtitle">Select your date</p>
             <input type="date" class="selections" id="scatterDay" name="date" required>

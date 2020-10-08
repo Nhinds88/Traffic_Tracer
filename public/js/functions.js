@@ -1,27 +1,27 @@
-$(document).ready(function(){
+$(document).ready(function() {
 
     const getDatesBetween = (startDate, endDate) => {
         const dates = [];
-    
+
         // Strip hours minutes seconds etc.
         let currentDate = new Date(
             startDate.getFullYear(),
             startDate.getMonth(),
             startDate.getDate()
         );
-    
+
         while (currentDate <= endDate) {
             arrayDate = currentDate.toISOString();
             arrayDate = arrayDate.substring(0, arrayDate.length - 14);
             dates.push(arrayDate);
-    
+
             currentDate = new Date(
                 currentDate.getFullYear(),
                 currentDate.getMonth(),
                 currentDate.getDate() + 1, // Will increase month if over range
             );
         }
-    
+
         return dates;
     };
 
@@ -61,31 +61,32 @@ $(document).ready(function(){
     function timeChart(data1, data2, labels) {
         var canvas = document.getElementById("myChartTime");
         var graphParams = {
-            type:"scatter",
-            data:{
+            type: "scatter",
+            data: {
                 labels: labels,
                 datasets: [{
-                    label:"Enter",
-                    data:data1,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                },
-                {
-                    label:"Exit",
-                    data:data2,
-                    borderColor: 'rgba(118, 54, 38 , 1)',
-                    backgroundColor: 'rgba(118, 54, 38 , 0.2)',
-                }],
+                        label: "Enter",
+                        data: data1,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    },
+                    {
+                        label: "Exit",
+                        data: data2,
+                        borderColor: 'rgba(118, 54, 38 , 1)',
+                        backgroundColor: 'rgba(118, 54, 38 , 0.2)',
+                    }
+                ],
             },
-            options:{
-                scales:{
-                    xAxes:[{
-                        type:"time",
-                            time: {
-                                displayFormats: {
-                                    day: 'MMM D'
-                                }
-                            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: "time",
+                        time: {
+                            displayFormats: {
+                                day: 'MMM D'
+                            }
+                        },
                         distribution: "series",
                     }],
                 }
@@ -130,30 +131,30 @@ $(document).ready(function(){
     function timeHourlyChart(data1, data2) {
         var canvas = document.getElementById("myChartIndividualHourly");
         var graphParams = {
-            type:"scatter",
-            data:{
+            type: "scatter",
+            data: {
                 datasets: [{
-                    label:"Enter",
-                    data:data1,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                },
-                {
-                    label:"Exit",
-                    data:data2,
-                    borderColor: 'rgba(118, 54, 38 , 1)',
-                    backgroundColor: 'rgba(118, 54, 38 , 0.2)',
-                }],
+                        label: "Enter",
+                        data: data1,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    },
+                    {
+                        label: "Exit",
+                        data: data2,
+                        borderColor: 'rgba(118, 54, 38 , 1)',
+                        backgroundColor: 'rgba(118, 54, 38 , 0.2)',
+                    }
+                ],
             },
-            options:{
-                scales:{
+            options: {
+                scales: {
                     yAxes: [{
                         ticks: {
                             beginAtZero: true
                         }
-                    }
-                    ],
-                    xAxes:[{
+                    }],
+                    xAxes: [{
                         ticks: {
                             beginAtZero: true
                         },
@@ -178,14 +179,14 @@ $(document).ready(function(){
         date2Temp = new Date($("#d2").val().toString());
         date2 = new Date(date2Temp.getFullYear(), date2Temp.getMonth(), date2Temp.getDate() + 1);
 
-        const dates = getDatesBetween(date1, date2); 
+        const dates = getDatesBetween(date1, date2);
 
         console.log(dates);
-        
+
         $.ajax({
-            method: "get", 
-            url: "/api/countsEnterAndExit", 
-            data: { "date1" : $("#d1").val(),"date2" : $("#d2").val()}, 
+            method: "get",
+            url: "/api/countsEnterAndExit",
+            data: { "date1": $("#d1").val(), "date2": $("#d2").val() },
             success: function(rows, status) {
 
                 var enterCount = [];
@@ -219,18 +220,22 @@ $(document).ready(function(){
     })
 
     $("#getEntryPDF").on('click', function() {
+
         $.ajax({
-            method: "post", 
-            url: "/api/entrypdf", 
-            data: { "date1" : $("#enterpdf1").val(),"date2" : $("#enterpdf2").val()}
+            method: "get",
+            url: "/api/showenterpdf",
+            // data: { "date1": $("#enterpdf1").val(), "date2": $("#enterpdf2").val() },
+            success: function(rows, status) {
+                console.log('success!');
+            }
         })
     })
 
     $("#getExitPDF").on('click', function() {
         $.ajax({
-            method: "post", 
-            url: "/api/exitpdf", 
-            data: { "date1" : $("#exitpdf1").val(),"date2" : $("#exitpdf2").val()}
+            method: "post",
+            url: "/api/exitpdf",
+            data: { "date1": $("#exitpdf1").val(), "date2": $("#exitpdf2").val() }
         })
     })
 
@@ -241,14 +246,14 @@ $(document).ready(function(){
         date2Temp = new Date($("#d2").val().toString());
         date2 = new Date(date2Temp.getFullYear(), date2Temp.getMonth(), date2Temp.getDate() + 1);
 
-        const dates = getDatesBetween(date1, date2); 
+        const dates = getDatesBetween(date1, date2);
 
         console.log(dates);
-        
+
         $.ajax({
-            method: "get", 
-            url: "/api/countsTime", 
-            data: { "date1" : $("#time1").val(),"date2" : $("#time2").val()}, 
+            method: "get",
+            url: "/api/countsTime",
+            data: { "date1": $("#time1").val(), "date2": $("#time2").val() },
             success: function(rows, status) {
 
                 var entertimeArray = [];
@@ -295,7 +300,7 @@ $(document).ready(function(){
                     x = enterdateArray[i];
                     y = entertimeArray[i];
 
-                    var json = {x: x, y: y};
+                    var json = { x: x, y: y };
                     enterdatesandtimes.push(json);
                 }
 
@@ -303,7 +308,7 @@ $(document).ready(function(){
                     x = exitdateArray[i];
                     y = exittimeArray[i];
 
-                    var json = {x: x, y: y};
+                    var json = { x: x, y: y };
                     exitdatesandtimes.push(json);
                 }
 
@@ -313,20 +318,20 @@ $(document).ready(function(){
     })
 
     $("#getHourlyData").on('click', function() {
-        
+
         const hours = ["12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"];
 
         $.ajax({
-            method: "get", 
-            url: "/api/countsHourly", 
-            data: { "date" : $("#day").val()}, 
+            method: "get",
+            url: "/api/countsHourly",
+            data: { "date": $("#day").val() },
             success: function(rows, status) {
 
                 var exitCount = [];
                 var enterCount = [];
                 var exitTimes = [];
                 var enterTimes = [];
-                
+
                 rows.forEach(function(row, index) {
                     if (row.enterorexit == "enter") {
                         temp = row.time;
@@ -363,13 +368,13 @@ $(document).ready(function(){
     })
 
     $("#getIndividualHourlyData").on('click', function() {
-        
+
         const hours = ["12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"];
 
         $.ajax({
-            method: "get", 
-            url: "/api/individualHourly", 
-            data: { "date" : $("#scatterDay").val()}, 
+            method: "get",
+            url: "/api/individualHourly",
+            data: { "date": $("#scatterDay").val() },
             success: function(rows, status) {
 
                 var entertimeArray = [];
@@ -398,8 +403,8 @@ $(document).ready(function(){
                         entertimeArray[index] = timeEntry;
 
                         for (i = 0; i < hours.length; i++) {
-                            if (timeEntry >= i && i+1 < timeEntry) {
-                                enterhourArray[index] = i; 
+                            if (timeEntry >= i && i + 1 < timeEntry) {
+                                enterhourArray[index] = i;
                             }
                         }
                     }
@@ -414,7 +419,7 @@ $(document).ready(function(){
                         exittimeArray[index] = timeEntry;
 
                         for (i = 0; i < hours.length; i++) {
-                            if (timeEntry >= i && i+1 < timeEntry) {
+                            if (timeEntry >= i && i + 1 < timeEntry) {
                                 exithourArray[index] = i;
                             }
                         }
@@ -428,7 +433,7 @@ $(document).ready(function(){
                     x = enterhourArray[i];
                     y = entertimeArray[i];
 
-                    var json = {x: x, y: y};
+                    var json = { x: x, y: y };
                     enterhoursandtimes.push(json);
                 }
 
@@ -436,7 +441,7 @@ $(document).ready(function(){
                     x = exithourArray[i];
                     y = exittimeArray[i];
 
-                    var json = {x: x, y: y};
+                    var json = { x: x, y: y };
                     exithoursandtimes.push(json);
                 }
 
