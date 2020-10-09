@@ -219,26 +219,6 @@ $(document).ready(function() {
         })
     })
 
-    $("#getEntryPDF").on('click', function() {
-
-        $.ajax({
-            method: "get",
-            url: "/api/showenterpdf",
-            // data: { "date1": $("#enterpdf1").val(), "date2": $("#enterpdf2").val() },
-            success: function(rows, status) {
-                console.log('success!');
-            }
-        })
-    })
-
-    $("#getExitPDF").on('click', function() {
-        $.ajax({
-            method: "post",
-            url: "/api/exitpdf",
-            data: { "date1": $("#exitpdf1").val(), "date2": $("#exitpdf2").val() }
-        })
-    })
-
     $("#getTimeData").on('click', function() {
 
         date1Temp = new Date($("#d1").val().toString());

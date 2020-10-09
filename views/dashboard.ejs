@@ -4,6 +4,7 @@
     <br>
 
     <h1 class="pageTitle">Dashboard</h1>
+    <h1 class="storeTitle"> </h1>
 
     <br>
     <br>
@@ -20,24 +21,16 @@
             <div class="containerChart">
                 <canvas id="myChartEOE"></canvas>
             </div>
-            <p id="reportsubtitle">Entry PDF</p>
-            <!-- <input type="date" class="selections" id="enterpdf1" name="entry1" placeholder="Starting Date" required>
-            <input type="date" class="selections" id="enterpdf2" name="entry2" placeholder="Ending Date" required>
-            <button class="selections" id='getEntryPDF'>
-                Get PDF
-            </button> -->
-            <form action="/api/entrypdf" method="post">
-                <label for="team_name">Enter dates </label>
-                <input id="entry1" type="date" name="entry1" required>
-                <input id="entry2" type="date" name="entry2" required>
-                <input id="getEntryPDF" type="submit" value="Get PDF">
-            </form>
-            <p id="reportsubtitle">Exit PDF</p>
-            <input type="date" class="selections" id="exitpdf1" name="exit1" placeholder="Starting Date" required>
-            <input type="date" class="selections" id="exitpdf2" name="exit2" placeholder="Ending Date" required>
-            <button class="selections" id='getExitPDF'>
-                Get PDF
-            </button>
+
+            <p id="reportsubtitle">Daily Counts PDF</p>
+
+            <form action="/api/countspdf" method="post">
+                <label id="reportsubtitle" for="pdfReport">Enter dates </label>
+                <input class="selections" id="entry1" type="date" name="entry1" required>
+                <input class="selections" id="entry2" type="date" name="entry2" required>
+                <input class="selections" id="getDailyCountsPDF" type="submit" value="Generate PDF">
+            </form>            
+
         </div>
         <div id="timesanddatesReport">
             <p id="reporttitle">Daily Individual Entries and Exits</p>
@@ -50,9 +43,23 @@
             <div class="containerChart">
                 <canvas id="myChartTime"></canvas>
             </div>
-            <button class="selections" id='getTimeData'>
-                Get PDF
-            </button>
+
+            <p id="reportsubtitle">Entry PDF</p>
+
+            <form action="/api/entrypdf" method="post">
+                <label id="reportsubtitle" for="pdfReport">Enter dates </label>
+                <input class="selections" id="entry1" type="date" name="entry1" required>
+                <input class="selections" id="entry2" type="date" name="entry2" required>
+                <input class="selections" id="getEntryPDF" type="submit" value="Generate PDF">
+            </form>
+
+            <form action="/api/exitpdf" method="post">
+                <label id="reportsubtitle" for="pdfReport">Enter dates </label>
+                <input class="selections" id="entry1" type="date" name="entry1" required>
+                <input class="selections" id="entry2" type="date" name="entry2" required>
+                <input class="selections" id="getexitPDF" type="submit" value="Generate PDF">
+            </form>
+
         </div>
         <div id="hourlyReport">
             <p id="reporttitle">Hourly Entry and Exit Totals</p>
