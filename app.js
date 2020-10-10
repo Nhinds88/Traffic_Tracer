@@ -265,53 +265,11 @@ function table(data, columns, witdhsDef, showHeaders, headers, layoutDef) {
     };
 }
 
-// Counts within an Array
+// counts occurrence of value in an array 
 function getCounts(arr, val) {
     var count = 0;
     arr.forEach((v) => (v == val && count++));
     return count;
-}
-
-// 
-var getDatesBetween = (startDate, endDate) => {
-    var dates = [];
-
-    // Strip hours minutes seconds etc.
-    let currentDate = new Date(
-        startDate.getFullYear(),
-        startDate.getMonth(),
-        startDate.getDate()
-    );
-
-    while (currentDate <= endDate) {
-        arrayDate = currentDate.toISOString();
-        arrayDate = arrayDate.substring(0, arrayDate.length - 14);
-        // arrayDate = arrayDate;
-        dates.push(arrayDate);
-
-        currentDate = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            currentDate.getDate() + 1, // Will increase month if over range
-        );
-    }
-
-    return dates;
-};
-
-var dayCounts = (dates, mid) => {
-    return new Promise((resolve, reject) => {
-        sql = "SELECT trafficid FROM foottraffic WHERE merchantid = " + mid[0].merchantid + " AND date = '" + dates + "'";
-        connection.query(sql, function(error, results, fields) {
-            if (error) {
-                console.log(error);
-                return;
-            } else {
-                count = results.length;
-            }
-            resolve(true);
-        })
-    })
 }
 
 app.post("/api/countspdf", (req, res) => {
@@ -327,118 +285,57 @@ app.post("/api/countspdf", (req, res) => {
     connection.query(sql, function(error, mid, fields) {
         console.log(mid);
         if (!error) {
-            date1Temp = new Date(req.body.entry1.toString());
-            date1 = new Date(date1Temp.getFullYear(), date1Temp.getMonth(), date1Temp.getDate() + 1);
-            date2Temp = new Date(req.body.entry2.toString());
-            date2 = new Date(date2Temp.getFullYear(), date2Temp.getMonth(), date2Temp.getDate() + 1);
+            sql = "SELECT DATE_FORMAT(date, '%Y-%m-%d') d, COUNT(trafficid) AS c FROM foottraffic where merchantid = " + mid[0].merchantid + " AND date between '" + req.body.entry1 + "' AND '" + req.body.entry2 + "' GROUP BY d";
+            connection.query(sql, function(error, results, fields) {
+                if (!error) {
+                    console.log(results);
+                    var dataSQL = [];
+                    
+                    results.forEach(function(row, index) {
+                        dataSQL.push({
+                            'date': row.d,
+                            'time': row.c
+                        })
+                    })
 
-            var dates = getDatesBetween(date1, date2);
+                    var now = new Date();
+                    now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
 
-            var dataSQL = [];
-            var enterCount = [];
-            var enterArray = [];
+                    var dd = {
+                        background: function() {
+                            return {
+                                canvas: [{
+                                    type: 'rect',
+                                    x: 0,
+                                    y: 0,
+                                    w: 595.28,
+                                    h: 841.89,
+                                    color: '#ededed'
+                                }]
+                            };
+                        },
+                        footer: {
+                            columns: [
+                            { text: now, alignment: 'left' }
+                            ]
+                        },
+                        content: [
+                            { image: './logo/trafficTracerSmall.png' },
+                            { text: ssn.merchant, color: '#336B87' },
+                            { text: 'Daily Counts Data', color: '#336B87', fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+                            table(dataSQL, ['date', 'time'], ['*', '*'], true, [{ text: 'Date', color: '#336B87', bold: true }, { text: 'Count', color: '#336B87', bold: true }], '')
+                        ]
+                    }
 
-            for (i = 0; i < dates.length; i++) {
-                // sql = "SELECT trafficid FROM foottraffic WHERE merchantid = " + mid[0].merchantid + " AND date = '" + dates[i] + "'";
-                // connection.query(sql, function(error, results, fields) {
-                //     // console.log(results.length);
-                //     // setCountArray(results.length);
-                //     if (error) {
-                //         console.log(error);
-                //     } else {
-                //         count = results.length;
-                //     }
-                // })
-                enterCount[i] = dayCounts(dates[i], mid).then(() => count);
-            }
+                    var pdfDoc = printer.createPdfKitDocument(dd);
+                    pdfDoc.pipe(fs.createWriteStream('pdfs/dailyCounts.pdf'));
+                    pdfDoc.end();
+                    res.redirect('/api/showDailyCountspdf');
 
-            // function setCountArray(result) {
-            //     enterCount[i] = result;
-            //     //console.log(enterCount[i]);
-            // }
-            // connection.query('SELECT date, time FROM foottraffic WHERE enterorexit = "enter" AND merchantid = ' + mid[0].merchantid + ' AND date BETWEEN ? AND ?', [req.body.entry1, req.body.entry2], function(error, results, fields) {
-            //     if (!error) {
-
-                    // var dataSQL = [];
-                    // var enterCount = [];
-                    // var enterArray = [];
-
-            //         // date1Temp = new Date(req.body.entry1.toString());
-            //         // date1 = new Date(date1Temp.getFullYear(), date1Temp.getMonth(), date1Temp.getDate() + 1);
-            //         // date2Temp = new Date(req.body.entry2.toString());
-            //         // date2 = new Date(date2Temp.getFullYear(), date2Temp.getMonth(), date2Temp.getDate() + 1);
-
-            //         // var dates = getDatesBetween(date1, date2);
-
-            //         // // for (i = 0; i < dates.length; i++) {
-            //         // //     console.log(dates[i]) 
-            //         // // }
-
-            //         // results.forEach(function(row, index) {
-            //         //     // temp = row.date;
-            //         //     // enterArray[index] = temp.getFullYear()+"-"+(temp.getMonth()+1)+"-"+temp.getDate();
-            //         //     var myDate = new Date(row.epoch_time * 1000);
-            //         //     enterArray[index] = myDate;
-            //         // });
-
-            //         // for (i = 0; i < enterArray.length; i++) {
-            //         //     console.log("Date to be check " + enterArray[i]);
-            //         // }
-
-            //         // for (i = 0; i < dates.length; i++) {
-            //         //     enterCount[i] = getCounts(enterArray, dates[i]);
-            //         // }
-            for (i = 0; i < enterCount.length; i++) {
-                // enterCount[i] = enterCount[i].toString();
-                console.log(enterCount[i]);
-            }
-
-            enterCount.forEach(function(row, index) {
-                dataSQL.push({
-                    'date': row,
-                    'time': enterCount[index]
-                })
+                } else {
+                    console.log(error);
+                }
             })
-
-            // for (i = 0; i < dataSQL.length; i++) {
-            //     console.log(dataSQL[i]);
-            // }
-
-            console.log(dataSQL[0]);
-
-            var now = new Date();
-            now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
-
-            var dd = {
-                background: function() {
-                    return {
-                        canvas: [{
-                            type: 'rect',
-                            x: 0,
-                            y: 0,
-                            w: 595.28,
-                            h: 841.89,
-                            color: '#ededed'
-                        }]
-                    };
-                },
-                footer: {
-                    columns: [
-                      { text: now, alignment: 'left' }
-                    ]
-                },
-                content: [
-                    { image: './logo/trafficTracerSmall.png' },
-                    { text: ssn.merchant, color: '#336B87' },
-                    { text: 'Daily Counts Data', color: '#336B87', fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
-                    table(dataSQL, ['date', 'time'], ['*', '*'], true, [{ text: 'Date', color: '#336B87', bold: true }, { text: 'Count', color: '#336B87', bold: true }], '')
-                ]
-            }
-
-            var pdfDoc = printer.createPdfKitDocument(dd);
-            pdfDoc.pipe(fs.createWriteStream('pdfs/dailyCounts.pdf'));
-            pdfDoc.end();
-            res.redirect('/api/showDailyCountspdf');
         } else {
             console.log(error)
         }
@@ -602,6 +499,351 @@ app.get("/api/showexitpdf", (req, res) => {
     });
 });
 
+app.post("/api/dayEnterCountspdf", (req, res) => {
+
+    ssn = req.session;
+
+    console.log("merchant store " + ssn.merchant);
+
+    merchant = '"' + ssn.merchant + '"';
+
+    var sql = 'SELECT merchantid from merchant WHERE merchantname = ' + merchant;
+
+    const hours = ["12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"];
+
+    pdfPath = '/pdfs/' + merchant + 'dayEnterCounts.pdf';
+
+    connection.query(sql, function(error, mid, fields) {
+        console.log(mid);
+        if (!error) {
+            sql = "SELECT trafficid, enterorexit, time FROM foottraffic WHERE merchantid = " + mid[0].merchantid + " AND date = '" + req.body.dayEnterPDF + "'";
+            connection.query(sql, function(error, results, fields) {
+                if (!error) {
+                    console.log(results);
+                    var dataSQL = [];
+                    var enterCount = [];
+                    var enterTimes = [];
+
+                    results.forEach(function(row, index) {
+                        if (row.enterorexit == "enter") {
+                            temp = row.time;
+                            timeSplit = temp.split(":");
+                            timeString = timeSplit[0];
+                            hourEnter = parseInt(timeString);
+                            enterTimes[index] = hourEnter;
+                        }
+                    });
+
+                    for (i = 0; i < hours.length; i++) {
+                        hourCount = getCounts(enterTimes, i);
+                        enterCount[i] = hourCount;
+                    }
+                    
+                    hours.forEach(function(row, index) {
+                        dataSQL.push({
+                            'hour': row,
+                            'count': enterCount[index]
+                        })
+                    })
+
+                    var now = new Date();
+                    now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
+
+                    var dd = {
+                        background: function() {
+                            return {
+                                canvas: [{
+                                    type: 'rect',
+                                    x: 0,
+                                    y: 0,
+                                    w: 595.28,
+                                    h: 841.89,
+                                    color: '#ededed'
+                                }]
+                            };
+                        },
+                        footer: {
+                            columns: [
+                            { text: now, alignment: 'left' }
+                            ]
+                        },
+                        content: [
+                            { image: './logo/trafficTracerSmall.png' },
+                            { text: ssn.merchant, color: '#336B87' },
+                            { text: 'Hourly Enter Count Data', color: '#336B87', fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+                            table(dataSQL, ['hour', 'count'], ['*', '*'], true, [{ text: 'Hour', color: '#336B87', bold: true }, { text: 'Count', color: '#336B87', bold: true }], '')
+                        ]
+                    }
+
+                    var pdfDoc = printer.createPdfKitDocument(dd);
+                    pdfDoc.pipe(fs.createWriteStream('pdfs/dayEnterCounts.pdf'));
+                    pdfDoc.end();
+                    res.redirect('/api/showDayEnterCountspdf');
+
+                } else {
+                    console.log(error);
+                }
+            })
+        } else {
+            console.log(error)
+        }
+    });
+});
+
+app.get("/api/showDayEnterCountspdf", (req, res) => {
+    var filePath = "/pdfs/dayEnterCounts.pdf";
+
+    fs.readFile(__dirname + filePath , function (err,data){
+        res.contentType("application/pdf");
+        res.send(data);
+    });
+});
+
+app.post("/api/dayExitCountspdf", (req, res) => {
+
+    ssn = req.session;
+
+    console.log("merchant store " + ssn.merchant);
+
+    merchant = '"' + ssn.merchant + '"';
+
+    var sql = 'SELECT merchantid from merchant WHERE merchantname = ' + merchant;
+
+    const hours = ["12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"];
+
+    connection.query(sql, function(error, mid, fields) {
+        console.log(mid);
+        if (!error) {
+            sql = "SELECT trafficid, enterorexit, time FROM foottraffic WHERE merchantid = " + mid[0].merchantid + " AND date = '" + req.body.dayExitPDF + "'";
+            connection.query(sql, function(error, results, fields) {
+                if (!error) {
+                    console.log(results);
+                    var dataSQL = [];
+                    var enterCount = [];
+                    var enterTimes = [];
+
+                    results.forEach(function(row, index) {
+                        if (row.enterorexit == "exit") {
+                            temp = row.time;
+                            timeSplit = temp.split(":");
+                            timeString = timeSplit[0];
+                            hourEnter = parseInt(timeString);
+                            enterTimes[index] = hourEnter;
+                        }
+                    });
+
+                    for (i = 0; i < hours.length; i++) {
+                        hourCount = getCounts(enterTimes, i);
+                        enterCount[i] = hourCount;
+                    }
+                    
+                    hours.forEach(function(row, index) {
+                        dataSQL.push({
+                            'hour': row,
+                            'count': enterCount[index]
+                        })
+                    })
+
+                    var now = new Date();
+                    now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
+
+                    var dd = {
+                        background: function() {
+                            return {
+                                canvas: [{
+                                    type: 'rect',
+                                    x: 0,
+                                    y: 0,
+                                    w: 595.28,
+                                    h: 841.89,
+                                    color: '#ededed'
+                                }]
+                            };
+                        },
+                        footer: {
+                            columns: [
+                            { text: now, alignment: 'left' }
+                            ]
+                        },
+                        content: [
+                            { image: './logo/trafficTracerSmall.png' },
+                            { text: ssn.merchant, color: '#336B87' },
+                            { text: 'Hourly Exit Count Data', color: '#336B87', fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+                            table(dataSQL, ['hour', 'count'], ['*', '*'], true, [{ text: 'Hour', color: '#336B87', bold: true }, { text: 'Count', color: '#336B87', bold: true }], '')
+                        ]
+                    }
+
+                    var pdfDoc = printer.createPdfKitDocument(dd);
+                    pdfDoc.pipe(fs.createWriteStream('pdfs/dayExitCounts.pdf'));
+                    pdfDoc.end();
+                    res.redirect('/api/showDayExitCountspdf');
+
+                } else {
+                    console.log(error);
+                }
+            })
+        } else {
+            console.log(error)
+        }
+    });
+});
+
+app.get("/api/showDayExitCountspdf", (req, res) => {
+    var filePath = "/pdfs/dayExitCounts.pdf";
+
+    fs.readFile(__dirname + filePath , function (err,data){
+        res.contentType("application/pdf");
+        res.send(data);
+    });
+});
+
+app.post("/api/entryIndividualpdf", (req, res) => {
+
+    ssn = req.session;
+
+    console.log("merchant store " + ssn.merchant);
+
+    merchant = '"' + ssn.merchant + '"';
+
+    var sql = 'SELECT merchantid from merchant WHERE merchantname = ' + merchant;
+
+    connection.query(sql, function(error, mid, fields) {
+        console.log(mid);
+        if (!error) {
+            connection.query('SELECT trafficid, date, time FROM foottraffic WHERE enterorexit = "enter" AND merchantid = ' + mid[0].merchantid + ' AND date = ?', [req.body.entry], function(error, results, fields) {
+                if (!error) {
+                    console.log(results[0]);
+
+                    var dataSQL = [];
+
+                    results.forEach(function(row, index) {
+                        dataSQL.push({
+                            'trafficid': row.trafficid.toString(),
+                            'date': row.date.toString().substr(0, 15),
+                            'time': row.time.toString()
+                        })
+                    })
+
+                    var dd = {
+                        background: function() {
+                            return {
+                                canvas: [{
+                                    type: 'rect',
+                                    x: 0,
+                                    y: 0,
+                                    w: 595.28,
+                                    h: 841.89,
+                                    color: '#ededed'
+                                }]
+                            };
+                        },
+                        content: [
+                            { image: './logo/trafficTracerSmall.png' },
+                            { text: ssn.merchant, color: '#336B87' },
+                            { text: 'Single Date Entry Data', color: '#336B87', fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+                            table(dataSQL, ['trafficid', 'date', 'time'], ['*', '*', '*'], true, [{ text: 'ID', color: '#336B87', bold: true }, { text: 'Date', color: '#336B87', bold: true }, { text: 'Time', color: '#336B87', bold: true }], '')
+                        ]
+                    }
+
+                    var now = new Date();
+                    var pdfDoc = printer.createPdfKitDocument(dd);
+                    pdfDoc.pipe(fs.createWriteStream('pdfs/enter1day.pdf'));
+                    pdfDoc.end();
+                    console.log(new Date() - now);
+                    res.redirect('/api/showenter1daypdf');
+
+                } else {
+                    console.log(error)
+                }
+            })
+        } else {
+            console.log(error)
+        }
+    });
+});
+
+app.get("/api/showenter1daypdf", (req, res) => {
+    var filePath = "/pdfs/enter1day.pdf";
+
+    fs.readFile(__dirname + filePath , function (err,data){
+        res.contentType("application/pdf");
+        res.send(data);
+    });
+});
+
+app.post("/api/exitIndividualpdf", (req, res) => {
+
+    ssn = req.session;
+
+    console.log("merchant store " + ssn.merchant);
+
+    merchant = '"' + ssn.merchant + '"';
+
+    var sql = 'SELECT merchantid from merchant WHERE merchantname = ' + merchant;
+
+    connection.query(sql, function(error, mid, fields) {
+        console.log(mid);
+        if (!error) {
+            connection.query('SELECT trafficid, date, time FROM foottraffic WHERE enterorexit = "exit" AND merchantid = ' + mid[0].merchantid + ' AND date = ?', [req.body.exit], function(error, results, fields) {
+                if (!error) {
+                    console.log(results[0]);
+
+                    var dataSQL = [];
+
+                    results.forEach(function(row, index) {
+                        dataSQL.push({
+                            'trafficid': row.trafficid.toString(),
+                            'date': row.date.toString().substr(0, 15),
+                            'time': row.time.toString()
+                        })
+                    })
+
+                    var dd = {
+                        background: function() {
+                            return {
+                                canvas: [{
+                                    type: 'rect',
+                                    x: 0,
+                                    y: 0,
+                                    w: 595.28,
+                                    h: 841.89,
+                                    color: '#ededed'
+                                }]
+                            };
+                        },
+                        content: [
+                            { image: './logo/trafficTracerSmall.png' },
+                            { text: ssn.merchant, color: '#336B87' },
+                            { text: 'Single Date Exit Data', color: '#336B87', fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+                            table(dataSQL, ['trafficid', 'date', 'time'], ['*', '*', '*'], true, [{ text: 'ID', color: '#336B87', bold: true }, { text: 'Date', color: '#336B87', bold: true }, { text: 'Time', color: '#336B87', bold: true }], '')
+                        ]
+                    }
+
+                    var now = new Date();
+                    var pdfDoc = printer.createPdfKitDocument(dd);
+                    pdfDoc.pipe(fs.createWriteStream('pdfs/exit1day.pdf'));
+                    pdfDoc.end();
+                    console.log(new Date() - now);
+                    res.redirect('/api/showexit1daypdf');
+
+                } else {
+                    console.log(error)
+                }
+            })
+        } else {
+            console.log(error)
+        }
+    });
+});
+
+app.get("/api/showexit1daypdf", (req, res) => {
+    var filePath = "/pdfs/exit1day.pdf";
+
+    fs.readFile(__dirname + filePath , function (err,data){
+        res.contentType("application/pdf");
+        res.send(data);
+    });
+});
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////

@@ -150,15 +150,31 @@ $(document).ready(function() {
             options: {
                 scales: {
                     yAxes: [{
+                        id: 'A',
+                        type: 'linear',
+                        position: 'left',
                         ticks: {
-                            beginAtZero: true
+                            min: 0,
+                            max: 60,
+                            stepSize: 10
+                        }
+                    }, {
+                        id: 'B',
+                        type: 'linear',
+                        position: 'right',
+                        ticks: {
+                            min: 0,
+                            max: 60,
+                            stepSize: 10
                         }
                     }],
                     xAxes: [{
+                        type: 'linear',
                         ticks: {
-                            beginAtZero: true
-                        },
-                        distribution: "series",
+                            min: 0,
+                            max: 24,
+                            stepSize: 2
+                        }
                     }],
                 }
             }
@@ -356,74 +372,48 @@ $(document).ready(function() {
             url: "/api/individualHourly",
             data: { "date": $("#scatterDay").val() },
             success: function(rows, status) {
-
-                var entertimeArray = [];
-                var enterhourArray = [];
-                var exittimeArray = [];
-                var exithourArray = [];
-
-                rows.forEach(function(row, index) {
-                    if (row.enterorexit == "enter") {
-                        enterhourArray[index] = 0;
-                    }
-                });
-
-                rows.forEach(function(row, index) {
-                    if (row.enterorexit == "exit") {
-                        exithourArray[index] = 0;
-                    }
-                });
-
-                rows.forEach(function(row, index) {
-                    if (row.enterorexit == "enter") {
-                        temp = row.time;
-                        timeSplit = temp.split(":");
-                        timeString = timeSplit[0] + "." + timeSplit[1] + timeSplit[2];
-                        timeEntry = parseFloat(timeString);
-                        entertimeArray[index] = timeEntry;
-
-                        for (i = 0; i < hours.length; i++) {
-                            if (timeEntry >= i && i + 1 < timeEntry) {
-                                enterhourArray[index] = i;
-                            }
-                        }
-                    }
-                });
-
-                rows.forEach(function(row, index) {
-                    if (row.enterorexit == "exit") {
-                        temp = row.time;
-                        timeSplit = temp.split(":");
-                        timeString = timeSplit[0] + "." + timeSplit[1] + timeSplit[2];
-                        timeEntry = parseFloat(timeString);
-                        exittimeArray[index] = timeEntry;
-
-                        for (i = 0; i < hours.length; i++) {
-                            if (timeEntry >= i && i + 1 < timeEntry) {
-                                exithourArray[index] = i;
-                            }
-                        }
-                    }
-                });
-
+                
                 var enterhoursandtimes = [];
                 var exithoursandtimes = [];
 
-                for (i = 0; i < enterhourArray.length; i++) {
-                    x = enterhourArray[i];
-                    y = entertimeArray[i];
+                rows.forEach(function(row, index) {
+                    if (row.enterorexit == "enter") {
+                        temp = row.time;
+                        timeSplit = temp.split(":");
+                        timeHour = timeSplit[0];
+                        timeMinute = timeSplit[1];
+                        x = parseInt(timeHour);
+                        y = parseInt(timeMinute);
+                    } else {
+                        x = 0;
+                        y = 0;
+                    }
 
                     var json = { x: x, y: y };
                     enterhoursandtimes.push(json);
-                }
+                });
 
-                for (i = 0; i < exithourArray.length; i++) {
-                    x = exithourArray[i];
-                    y = exittimeArray[i];
+                rows.forEach(function(row, index) {
+                    if (row.enterorexit == "exit") {
+                        temp = row.time;
+                        timeSplit = temp.split(":");
+                        timeHour = timeSplit[0];
+                        timeMinute = timeSplit[1];
+                        x = parseInt(timeHour);
+                        y = parseInt(timeMinute);
+                    } else {
+                        x = 0;
+                        y = 0;
+                    }
 
                     var json = { x: x, y: y };
                     exithoursandtimes.push(json);
-                }
+                });
+
+                console.log("enter");
+                console.log(enterhoursandtimes);
+                console.log("exit")
+                console.log(exithoursandtimes);
 
                 timeHourlyChart(enterhoursandtimes, exithoursandtimes);
             }

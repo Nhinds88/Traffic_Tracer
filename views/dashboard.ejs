@@ -22,6 +22,8 @@
                 <canvas id="myChartEOE"></canvas>
             </div>
 
+            <hr class="rounded">
+
             <p id="reportsubtitle">Daily Counts PDF</p>
 
             <form action="/api/countspdf" method="post">
@@ -31,6 +33,9 @@
                 <input class="selections" id="getDailyCountsPDF" type="submit" value="Generate PDF">
             </form>            
 
+            <hr class="rounded">
+            <br>
+            <br>
         </div>
         <div id="timesanddatesReport">
             <p id="reporttitle">Daily Individual Entries and Exits</p>
@@ -44,6 +49,8 @@
                 <canvas id="myChartTime"></canvas>
             </div>
 
+            <hr class="rounded">
+
             <p id="reportsubtitle">Entry PDF</p>
 
             <form action="/api/entrypdf" method="post">
@@ -53,6 +60,12 @@
                 <input class="selections" id="getEntryPDF" type="submit" value="Generate PDF">
             </form>
 
+            <br>
+            <hr class="rounded">
+            <br>
+
+            <p id="reportsubtitle">Exit PDF</p>
+
             <form action="/api/exitpdf" method="post">
                 <label id="reportsubtitle" for="pdfReport">Enter dates </label>
                 <input class="selections" id="entry1" type="date" name="entry1" required>
@@ -60,6 +73,9 @@
                 <input class="selections" id="getexitPDF" type="submit" value="Generate PDF">
             </form>
 
+            <hr class="rounded">
+            <br>
+            <br>
         </div>
         <div id="hourlyReport">
             <p id="reporttitle">Hourly Entry and Exit Totals</p>
@@ -71,9 +87,32 @@
             <div class="containerChart">
                 <canvas id="myChartHourly"></canvas>
             </div>
-            <button class="selections" id='getTimeData'>
-                Get PDF
-            </button>
+
+            <hr class="rounded">
+
+            <p id="reportsubtitle">Day Enter Counts PDF</p>
+
+            <form action="/api/dayEnterCountspdf" method="post">
+                <label id="reportsubtitle" for="pdfReport">Enter date </label>
+                <input class="selections" id="dayEnterPDF" type="date" name="dayEnterPDF" required>
+                <input class="selections" id="getDayEnterCountsPDF" type="submit" value="Generate PDF">
+            </form>
+
+            <br>
+            <hr class="rounded">
+            <br>
+
+            <p id="reportsubtitle">Day Exit Counts PDF</p>
+
+            <form action="/api/dayExitCountspdf" method="post">
+                <label id="reportsubtitle" for="pdfReport">Enter date </label>
+                <input class="selections" id="dayExitPDF" type="date" name="dayExitPDF" required>
+                <input class="selections" id="getDayExitCountsPDF" type="submit" value="Generate PDF">
+            </form>
+
+            <hr class="rounded">
+            <br>
+            <br>
         </div>
         <div id="hourlyIndividualReport">
             <p id="reporttitle">Individual Hourly Entry and Exit</p>
@@ -85,9 +124,32 @@
             <div class="containerChart">
                 <canvas id="myChartIndividualHourly"></canvas>
             </div>
-            <button class="selections" id='getTimeData'>
-                Get PDF
-            </button>
+
+            <hr class="rounded">
+
+            <p id="reportsubtitle">Single Day Entry PDF</p>
+
+            <form action="/api/entryIndividualpdf" method="post">
+                <label id="reportsubtitle" for="pdfReport">Enter date </label>
+                <input class="selections" id="entry" type="date" name="entry" required>
+                <input class="selections" id="getSingleDayPDF" type="submit" value="Generate PDF">
+            </form>
+
+            <br>
+            <hr class="rounded">
+            <br>
+
+            <p id="reportsubtitle">Single Day Exit PDF</p>
+
+            <form action="/api/exitIndividualpdf" method="post">
+                <label id="reportsubtitle" for="pdfReport">Enter date </label>
+                <input class="selections" id="exit" type="date" name="exit" required>
+                <input class="selections" id="getSingleDayPDF" type="submit" value="Generate PDF">
+            </form>
+
+            <hr class="rounded">
+            <br>
+            <br>
         </div>
     </div>
 

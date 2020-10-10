@@ -107,6 +107,13 @@ nav[role="select"] ul>li>a {
     transition: inherit;
 }
 
+hr.rounded {
+    height: 3px;
+    border: none;
+    background-color: #602c1f;
+    width: 50%;
+  }
+
 /* small screens */
 
 @media screen and (max-width: 44em) {
@@ -158,6 +165,7 @@ nav[role="select"] ul>li>a {
 .containerChart {
     position: relative;
     left: 35%;
+    height: 60%;
     width: 40%;
 }
 
