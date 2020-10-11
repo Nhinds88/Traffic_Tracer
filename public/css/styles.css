@@ -34,6 +34,14 @@ main {
     font-family: 'Press Start 2P', cursive;
 }
 
+/* .mainTextC {
+    text-align: left;
+    color: #336B87;
+    font-size: 0.3em;
+    font-family: 'Press Start 2P', cursive;
+} */
+
+
 .footLink {
     text-decoration: solid;
 }
@@ -96,9 +104,8 @@ nav[role="select"] ul>li {
 nav[role="select"] ul>li:hover {
     background-color: #602c1f;
     color: #fff;
-    text-align: left;
     padding-left: 0.75em;
-    box-shadow: 0 0 0 0.25em rgba(0, 0, 0, .3), 0 0 0 0.5em rgba(0, 0, 0, .3), 0 0 0 0.75em rgba(0, 0, 0, .3), inset 0 0 0 0.25em rgba(0, 0, 0, .3);
+    box-shadow: 0 0 0 0.2em rgba(0, 0, 0, .3), 0 0 0 0.5em rgba(0, 0, 0, .3), 0 0 0 0.75em rgba(0, 0, 0, .3), 0 0 0 0.25em rgba(0, 0, 0, .3);
 }
 
 nav[role="select"] ul>li>a {
@@ -155,6 +162,31 @@ hr.rounded {
     color: #336B87;
     font-size: 0.3em;
     font-family: 'Press Start 2P', cursive;
+}
+
+.tableHead {
+    color: #336B87;
+    font-size: 0.5em;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.tableContent {
+    text-align: left;
+    color: #90AFC5;
+    font-size: 0.3em;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.innerRow {
+    padding: 5%;
+    vertical-align: baseline;
+    line-height: 1.6;
+}
+
+.imageCenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .selections {
