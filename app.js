@@ -17,20 +17,39 @@ app.use(express.json({ limit: '1mb' }));
 // connection
 var connection = tools.createConnection();
 
+// // configure passport.js to use the local strategy
+// passport.use(new LocalStrategy(
+//     { usernameField: 'username' },
+//     (email, password, done) => {
+//       console.log('Inside local strategy callback')
+//       // here is where you make a call to the database
+//       // to find the user based on their username or email address
+//       // for now, we'll just pretend we found that it was users[0]
+//       const user = users[0] 
+//       if(email === user.email && password === user.password) {
+//         console.log('Local strategy returned true')
+//         return done(null, user)
+//       }
+//     }
+// ));
+  
+// // tell passport how to serialize the user
+// passport.serializeUser((user, done) => {
+//     console.log('Inside serializeUser callback. User id is save to the session file store here')
+//     done(null, user.id);
+// });
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(session({
-    genid: (req) => {
-        console.log('Inside the session middleware');
-        console.log(req.sessionID);
-        return uuid();
-    },
-    store: new FileStore(),
     secret: 'secret',
     resave: true,
-    saveUninitialized: true,
+    saveUninitialized: true
 }));
+  
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 var ssn;
 
@@ -50,6 +69,8 @@ var fs = require('fs');
 
 //root route
 app.get("/", async function(req, res) {
+    ssn = req.session;
+    // ssn.loggedin = false;
     res.render("index");
 }); //root route
 
@@ -73,9 +94,19 @@ app.get("/login", async function(req, res) {
     res.render("login");
 }); //Login
 
+app.get("/logout", async function(req, res) {
+    ssn = req.session;
+    ssn.loggedin = false;
+    res.redirect('/');
+}); //log out
+
 //Dashboard
 app.get("/dashboard", async function(req, res) {
-    res.render("dashboard");
+    if (req.session.loggedin != true){
+        res.redirect('/login');
+    } else {
+        res.render("dashboard");
+    }
 }); //Dashboard
 
 //Login Auth
