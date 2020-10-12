@@ -2,8 +2,11 @@ const express = require("express");
 const session = require("express-session");
 const request = require("request");
 const mysql = require("mysql");
-var bodyParser = require('body-parser');
-const tools = require("./tools.js")
+const bodyParser = require('body-parser');
+const tools = require("./tools.js");
+const uuid = require('uuid/v4');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const router = express.Router();
 const app = express();
 
@@ -14,13 +17,20 @@ app.use(express.json({ limit: '1mb' }));
 // connection
 var connection = tools.createConnection();
 
-app.use(session({
-    secret: 'secret',
-    resave: true,
-    saveUninitialized: true
-}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(session({
+    genid: (req) => {
+        console.log('Inside the session middleware');
+        console.log(req.sessionID);
+        return uuid();
+    },
+    store: new FileStore(),
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true,
+}));
 
 var ssn;
 
@@ -32,15 +42,6 @@ var fonts = {
         bolditalics: "fonts/Roboto-MediumItalic.ttf"
     }
 };
-
-// const pdfMake = require('../pdfmake/pdfmake');
-// const vfsFonts = require('../pdfmake/vfs_fonts');
-
-// pdfMake.vfs = vfsFonts.pdfMake.vfs;
-
-// var pdfMake = require('pdfmake/build/pdfmake.js');
-// var pdfFonts = require('pdfmake/build/vfs_fonts.js');
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 var PdfPrinter = require('pdfmake');
 var printer = new PdfPrinter(fonts);
@@ -290,7 +291,7 @@ app.post("/api/countspdf", (req, res) => {
                 if (!error) {
                     console.log(results);
                     var dataSQL = [];
-                    
+
                     results.forEach(function(row, index) {
                         dataSQL.push({
                             'date': row.d,
@@ -299,7 +300,7 @@ app.post("/api/countspdf", (req, res) => {
                     })
 
                     var now = new Date();
-                    now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
+                    now = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
 
                     var dd = {
                         background: function() {
@@ -316,7 +317,7 @@ app.post("/api/countspdf", (req, res) => {
                         },
                         footer: {
                             columns: [
-                            { text: now, alignment: 'left' }
+                                { text: now, alignment: 'left' }
                             ]
                         },
                         content: [
@@ -345,7 +346,7 @@ app.post("/api/countspdf", (req, res) => {
 app.get("/api/showDailyCountspdf", (req, res) => {
     var filePath = "/pdfs/dailyCounts.pdf";
 
-    fs.readFile(__dirname + filePath , function (err,data){
+    fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
         res.send(data);
     });
@@ -419,7 +420,7 @@ app.post("/api/entrypdf", (req, res) => {
 app.get("/api/showenterpdf", (req, res) => {
     var filePath = "/pdfs/enter.pdf";
 
-    fs.readFile(__dirname + filePath , function (err,data){
+    fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
         res.send(data);
     });
@@ -493,7 +494,7 @@ app.post("/api/exitpdf", (req, res) => {
 app.get("/api/showexitpdf", (req, res) => {
     var filePath = "/pdfs/exit.pdf";
 
-    fs.readFile(__dirname + filePath , function (err,data){
+    fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
         res.send(data);
     });
@@ -538,7 +539,7 @@ app.post("/api/dayEnterCountspdf", (req, res) => {
                         hourCount = getCounts(enterTimes, i);
                         enterCount[i] = hourCount;
                     }
-                    
+
                     hours.forEach(function(row, index) {
                         dataSQL.push({
                             'hour': row,
@@ -547,7 +548,7 @@ app.post("/api/dayEnterCountspdf", (req, res) => {
                     })
 
                     var now = new Date();
-                    now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
+                    now = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
 
                     var dd = {
                         background: function() {
@@ -564,7 +565,7 @@ app.post("/api/dayEnterCountspdf", (req, res) => {
                         },
                         footer: {
                             columns: [
-                            { text: now, alignment: 'left' }
+                                { text: now, alignment: 'left' }
                             ]
                         },
                         content: [
@@ -593,7 +594,7 @@ app.post("/api/dayEnterCountspdf", (req, res) => {
 app.get("/api/showDayEnterCountspdf", (req, res) => {
     var filePath = "/pdfs/dayEnterCounts.pdf";
 
-    fs.readFile(__dirname + filePath , function (err,data){
+    fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
         res.send(data);
     });
@@ -636,7 +637,7 @@ app.post("/api/dayExitCountspdf", (req, res) => {
                         hourCount = getCounts(enterTimes, i);
                         enterCount[i] = hourCount;
                     }
-                    
+
                     hours.forEach(function(row, index) {
                         dataSQL.push({
                             'hour': row,
@@ -645,7 +646,7 @@ app.post("/api/dayExitCountspdf", (req, res) => {
                     })
 
                     var now = new Date();
-                    now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
+                    now = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
 
                     var dd = {
                         background: function() {
@@ -662,7 +663,7 @@ app.post("/api/dayExitCountspdf", (req, res) => {
                         },
                         footer: {
                             columns: [
-                            { text: now, alignment: 'left' }
+                                { text: now, alignment: 'left' }
                             ]
                         },
                         content: [
@@ -691,7 +692,7 @@ app.post("/api/dayExitCountspdf", (req, res) => {
 app.get("/api/showDayExitCountspdf", (req, res) => {
     var filePath = "/pdfs/dayExitCounts.pdf";
 
-    fs.readFile(__dirname + filePath , function (err,data){
+    fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
         res.send(data);
     });
@@ -765,7 +766,7 @@ app.post("/api/entryIndividualpdf", (req, res) => {
 app.get("/api/showenter1daypdf", (req, res) => {
     var filePath = "/pdfs/enter1day.pdf";
 
-    fs.readFile(__dirname + filePath , function (err,data){
+    fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
         res.send(data);
     });
@@ -839,7 +840,7 @@ app.post("/api/exitIndividualpdf", (req, res) => {
 app.get("/api/showexit1daypdf", (req, res) => {
     var filePath = "/pdfs/exit1day.pdf";
 
-    fs.readFile(__dirname + filePath , function (err,data){
+    fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
         res.send(data);
     });
