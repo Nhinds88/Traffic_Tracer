@@ -4,9 +4,6 @@ const request = require("request");
 const mysql = require("mysql");
 const bodyParser = require('body-parser');
 const tools = require("./tools.js");
-const uuid = require('uuid/v4');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const router = express.Router();
 const app = express();
 
@@ -14,30 +11,11 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(express.json({ limit: '1mb' }));
 
+//port
+const port = process.env.PORT || 8000;
+
 // connection
 var connection = tools.createConnection();
-
-// // configure passport.js to use the local strategy
-// passport.use(new LocalStrategy(
-//     { usernameField: 'username' },
-//     (email, password, done) => {
-//       console.log('Inside local strategy callback')
-//       // here is where you make a call to the database
-//       // to find the user based on their username or email address
-//       // for now, we'll just pretend we found that it was users[0]
-//       const user = users[0] 
-//       if(email === user.email && password === user.password) {
-//         console.log('Local strategy returned true')
-//         return done(null, user)
-//       }
-//     }
-// ));
-  
-// // tell passport how to serialize the user
-// passport.serializeUser((user, done) => {
-//     console.log('Inside serializeUser callback. User id is save to the session file store here')
-//     done(null, user.id);
-// });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -47,9 +25,6 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-  
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 var ssn;
 
@@ -70,7 +45,7 @@ var fs = require('fs');
 //root route
 app.get("/", async function(req, res) {
     ssn = req.session;
-    // ssn.loggedin = false;
+
     res.render("index");
 }); //root route
 
@@ -920,7 +895,7 @@ app.get("/terms", async function(req, res) {
 }); //Terms
 
 //server listener
-var listener = app.listen(process.env.PORT, process.env.IP, function() {
+var listener = app.listen(port, process.env.IP, function() {
     console.log("Express server is Running...");
     console.log('Listening on port ' + listener.address().port);
 });
