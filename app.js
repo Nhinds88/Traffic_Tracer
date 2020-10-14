@@ -69,20 +69,34 @@ app.get("/login", async function(req, res) {
     res.render("login");
 }); //Login
 
+// Log out
 app.get("/logout", async function(req, res) {
     ssn = req.session;
     ssn.loggedin = false;
     res.redirect('/');
-}); //log out
+}); //Log out
 
 //Dashboard
 app.get("/dashboard", async function(req, res) {
-    if (req.session.loggedin != true){
+    if (req.session.loggedin != true) {
         res.redirect('/login');
     } else {
         res.render("dashboard");
     }
 }); //Dashboard
+
+// PeopleCount
+app.post("/peopleCount", tools.peopleCount);
+
+// Admin
+app.get("/admin", async function(req, res) {
+    // if (req.seesion.username != "Nick") {
+    //     res.redirect("/");
+    // } else {
+    //     res.render("admin")
+    // }
+    res.render("admin")
+}); //Admin
 
 //Login Auth
 app.post("/auth", async function(req, res) {

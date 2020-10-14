@@ -1,0 +1,24 @@
+<%- include('partials/header.ejs') %>
+
+    <br>
+    <br>
+
+    <h1 class="pageTitle">Admin - Counter Setup</h1>
+
+    <form class="supportForm" action="peopleCount" method='POST'>
+        <input type="text" name="video" class="feedback-input" placeholder="video" required>
+        <input type="number" name="x1" class="feedback-input" placeholder="x1" required>
+        <input type="number" name="y1" class="feedback-input" placeholder="y1" required>
+        <input type="number" name="x2" class="feedback-input" placeholder="x2" required>
+        <input type="number" name="y2" class="feedback-input" placeholder="y2" required>
+        <input type="text" name="v_or_h" class="feedback-input" placeholder="v_or_h" required>
+        <input type="number" name="contourLimit" class="feedback-input" placeholder="contourLimit" required>
+        <input type="number" name="merchantid" class="feedback-input" placeholder="merchantid" required>
+        <input type="submit" class="support" value="Process">
+        <h2>&nbsp;</h2>
+    </form>
+
+    <br>
+    <br>
+
+    <%- include('partials/footer.ejs') %>
