@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+    // Get all the dates within a date range
     const getDatesBetween = (startDate, endDate) => {
         const dates = [];
 
@@ -24,6 +25,13 @@ $(document).ready(function() {
 
         return dates;
     };
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // Chart Functions
+    /////////////////
+    ///////////////
+    /////////////
+    ///////////
 
     function enterAndExitChart(data1, data2, labels) {
         var ctx = document.getElementById("myChartEOE").getContext('2d');
@@ -110,7 +118,7 @@ $(document).ready(function() {
                     label: 'Exit',
                     data: data2,
                     borderColor: 'rgba(118, 54, 38 , 1)',
-                    backgroundColor: 'rgba(118, 54, 38 , 0.2)',
+                    backgroundColor: 'rgba(118, 54, 38 , 1)',
                 }]
             },
             options: {
@@ -181,13 +189,18 @@ $(document).ready(function() {
         }
         ctx = new Chart(canvas, graphParams);
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Counts the number of time a value is in an array
     function getCounts(arr, val) {
         var count = 0;
         arr.forEach((v) => (v == val && count++));
         return count;
     }
 
+    // Ajax for Charts
     $("#getData").on('click', function() {
 
         date1Temp = new Date($("#d1").val().toString());

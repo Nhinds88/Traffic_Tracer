@@ -1,6 +1,5 @@
-const request = require('request');
 const mysql = require("mysql");
-const { spawn } = require('child_process')
+const spawn = require('child_process').spawn;
 
 module.exports = {
     createConnection: function() {
@@ -18,30 +17,44 @@ module.exports = {
         return conn;
     },
 
+    // Not Fully implemented, This aspect of the project is handled in another application for now
     peopleCount: function(req, res) {
 
-        // var spawn = require("child_process").spawn;
+        const counter = spawn('python', ['--version']);
 
-        // Parameters passed in spawn - 
-        // 1. type_of_script 
-        // 2. list containing Path of the script 
-        //    and arguments for the script  
+        counter.stdout.on('data', (data) => {
+            console.log(`stderr: ${data}`);
+        });
 
-        spawn('python', ["./python/people_counter.py",
-            req.body.video,
-            req.body.x1,
-            req.body.y1,
-            req.body.x2,
-            req.body.y2,
-            req.body.v_or_h,
-            req.body.contourLimit,
-            req.body.merchantid
-        ]);
+        counter.stderr.on('data', (data) => {
+            console.log(`stderr: ${data}`);
+        });
 
-        // Takes stdout data from script which executed 
-        // with arguments and send this data to res object 
-        // process.stdout.on('data', function(data) {
-        //     res.send(data.toString());
-        // })
+        counter.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
+
+        // var childProcess = require("child_process").spawn('python', ['./python/people_counter.py'],
+        //     req.body.video,
+        //     req.body.x1,
+        //     req.body.y1,
+        //     req.body.x2,
+        //     req.body.y2,
+        //     req.body.v_or_h,
+        //     req.body.contourLimit,
+        //     req.body.merchantid,
+        //      {stdio: "inherit"})
+        // childProcess.on('data', function(data){
+        //     process.stdout.write("python script output",data);
+        // });
+        // childProcess.on('close', function(code) {
+        //         if ( code === 1 ){
+        //             process.stderr.write("error occured",code);
+        //             process.exit(1);
+        //         }
+        //         else{
+        //             process.stdout.write('"python script exist with code: ' + code + '\n');
+        //         }
+        // });
     }
 }

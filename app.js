@@ -1,7 +1,5 @@
 const express = require("express");
 const session = require("express-session");
-const request = require("request");
-const mysql = require("mysql");
 const bodyParser = require('body-parser');
 const tools = require("./tools.js");
 const router = express.Router();
@@ -88,15 +86,16 @@ app.get("/dashboard", async function(req, res) {
 // PeopleCount
 app.post("/peopleCount", tools.peopleCount);
 
+// Not in use for this current version, Handled in another application for now 
 // Admin
-app.get("/admin", async function(req, res) {
-    // if (req.seesion.username != "Nick") {
-    //     res.redirect("/");
-    // } else {
-    //     res.render("admin")
-    // }
-    res.render("admin")
-}); //Admin
+// app.get("/admin", async function(req, res) {
+//     // if (req.seesion.username != "Nick") {
+//     //     res.redirect("/");
+//     // } else {
+//     //     res.render("admin")
+//     // }
+//     res.render("admin")
+// }); //Admin
 
 //Login Auth
 app.post("/auth", async function(req, res) {
@@ -128,6 +127,8 @@ app.post("/auth", async function(req, res) {
     }
 }); //Login Auth
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// API's for the Charts 
 app.get('/api/countsEnterAndExit', async function(req, res) {
 
     ssn = req.session;
@@ -293,6 +294,7 @@ function getCounts(arr, val) {
     return count;
 }
 
+// PDF Generators
 app.post("/api/countspdf", (req, res) => {
 
     ssn = req.session;
@@ -877,6 +879,9 @@ app.get("/api/showexit1daypdf", (req, res) => {
 ///////////////
 /////
 /// 
+/////////////////
+///Footer Links//
+/////////////////
 
 //Contact us
 app.get("/contactus", async function(req, res) {
