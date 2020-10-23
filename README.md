@@ -4,4 +4,4 @@
 
 Traffic Tracer is a Python and Web Application that seeks to use a merchants pre-existing camera system to gather foot traffic data and present this data in friendly easy to read manner. 
 
-This repo contains the Web Applicsion for user reporting.
+This repo contains the Web Application for user reporting.
